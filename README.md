@@ -14,60 +14,113 @@
 ##
 
 ## <a name="0" id="0" align="center">Основи</a>
-### Всі БД
+#### Усі БД
 ```javascript
 show dbs
 ```
-+ Поточна БД
+#### Поточна БД
 ```javascript
 db
 ```
 
 ## <a name="1" align="center">Створення бази даних</a>
+#### Створення | Вибір БД
 ```javascript
-use itseasy     // Створення|Вибір БД
-db.dropDatabase()   // Видалення БД
-db.createCollection('users')    // Створення нової колекції
-show collections    // Відображення колекцій
+use kyiv     
+```
+#### Видалення БД
+```javascript
+db.dropDatabase()
+```
+#### Створення нової колекції
+```javascript
+db.createCollection('famous')
+```
+#### Видалення колекції
+```javascript
+db.famous.drop()
+```
+#### Відображення усіх колекцій БД
+```javascript
+show collections  
 ```
 
-## <a name="2" align=center>Додавання даних в колекцію</a>
+## <a name="2" >Додавання даних до колекції</a>
+#### Додавання одного запису до колекції
 ```javascript
-
-
+db.famous.insertOne(
+    {
+        name: 'Taras Hryhorovych Shevchenko',
+        age: 47,
+        city: 'Moryntsi, Kyiv',
+        occupation: ['poet', 'writer', 'artist',],
+        married: false,
+        works:[
+            {
+                name: 'Kobzar',
+                type: 'book',
+                date: new Date('1840')
+            },
+        ]
+    },
+)
+```
+#### Додавання множини записів до колекції
+```javascript
+db.famous.insertMany(
+    [
+        {
+            name: 'I. I. Sikorsky',
+            age: 83,
+            city: 'Kyiv',
+            occupation: 'Aircraft designer'
+        },
+        {
+            name: 'K. S. Malevich',
+            age: 56,
+            city: 'Kyiv',
+            occupation: 'Artist'
+        },
+        {
+            name: 'M. A. Bulgakov',
+            age: 48,
+            city: 'Kyiv',
+            occupation: 'Novelist'
+        },
+    ]
+)
 ```
 
-## <a name="3" align=center>Вибірка даних з колекції</a>
+
+
+## <a name="3" >Вибірка даних з колекції</a>
 ```javascript
-db.posts.find()
+db.famous.find()
 db.find().pretty()
-db.posts.find({ category: 'News' })
+db.famous.find({ category: 'News' })
 ```
 
-## <a name="4" align=center>Оновлення та видалення даних</a>
-```javascript
-# ASC 
-db.posts.find().sort({ title: 1 }).pretty()
-# desc
-db.posts.find().sort({ title: -1 }).pretty()
+## <a name="4">Оновлення та видалення даних</a>
+```javascript 
+
 ```
 
-## <a name="5" align=center>Об'єднання запитів</a>
+## <a name="5">Об'єднання запитів</a>
 ```javascript
 
 ```
 
-## <a name="6" align=center>Пошук вмісту.</a>
+## <a name="6">Пошук вмісту.</a>
 ```javascript
 
 ```
 
-## <a name="7" align=center>Опрацювання даних в колекції.</a>
+## <a name="7">Опрацювання даних в колекції.</a>
 ```javascript
 
 ```
 
-## <a name="8" align=center>Фільтри та Оператори.</a>
+## <a name="8">Фільтри та Оператори.</a>
 ```javascript
 
 ```
