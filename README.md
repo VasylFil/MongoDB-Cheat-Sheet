@@ -21,23 +21,31 @@ db  // Поточна БД
 
 ## <a name="1" align="center">Створення бази даних</a>
 ```javascript
-
-
+use itseasy     // Створення|Вибір БД
+db.dropDatabase()   // Видалення БД
+db.createCollection('users')    // Створення нової колекції
+show collections    // Відображення колекцій
 ```
 
 ## <a name="2" align=center>Додавання даних в колекцію</a>
 ```javascript
 
+
 ```
 
 ## <a name="3" align=center>Вибірка даних з колекції</a>
 ```javascript
-
+db.posts.find()
+db.find().pretty()
+db.posts.find({ category: 'News' })
 ```
 
 ## <a name="4" align=center>Оновлення та видалення даних</a>
 ```javascript
-
+# ASC 
+db.posts.find().sort({ title: 1 }).pretty()
+# desc
+db.posts.find().sort({ title: -1 }).pretty()
 ```
 
 ## <a name="5" align=center>Об'єднання запитів</a>
