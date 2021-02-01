@@ -8,13 +8,21 @@
 #### [5. Об'єднання запитів.](#5)
 #### [6. Пошук вмісту.](#6)
 #### [7. Опрацювання даних в колекції.](#7)
-#### [8. Фільтри + Оператори.](#8)
+#### [8. Оператори.](#8)
 
+##
 ##
 ##
 
 ## <a name="0" id="0" align="center">Основи</a>
-#### Усі БД
+#### `Batch file` для зручної роботи на ОС Windows
+```
+start /min cmd /K ""C:\Program Files\MongoDB\Server\4.4\bin\mongod.exe" "--dbpath=c:\data\db""
+cmd /K "C:\Program Files\MongoDB\Server\4.4\bin\mongo.exe"
+```
+###### Вміст зберігаємо як `MongoDB.bat` => створюємо ярлик
+
+#### Відобразити усі БД
 ```javascript
 show dbs
 ```
@@ -22,6 +30,8 @@ show dbs
 ```javascript
 db
 ```
+
+
 
 ## <a name="1" align="center">Створення бази даних</a>
 #### Створення | Вибір БД
@@ -45,12 +55,14 @@ db.famous.drop()
 show collections  
 ```
 
+
+
 ## <a name="2" >Додавання даних до колекції</a>
 #### Додавання одного запису до колекції
 ```javascript
 db.famous.insertOne(
     {
-        name: 'Taras Hryhorovych Shevchenko',
+        name: 'T. H. Shevchenko',
         age: 47,
         city: 'Moryntsi, Kyiv',
         occupation: ['poet', 'writer', 'artist',],
@@ -93,35 +105,169 @@ db.famous.insertMany(
 
 
 
-## <a name="3" >Вибірка даних з колекції</a>
+## <a name="3">Вибірка даних з колекції</a>
+#### Вибірка всіх даних із колекції
 ```javascript
 db.famous.find()
-db.find().pretty()
-db.famous.find({ category: 'News' })
 ```
+#### Форматований вивід
+```javascript
+db.find().pretty()
+```
+#### Вибірка за фільтром
+```javascript
+db.famous.find(
+    { occupation: 'Aircraft designer' }
+)
+```
+#### Розширений фільр
+```javascript
+db.famous.find(
+    {   },       // параметри пошуку
+    { _id: 0 }   // параметри ігрнорування
+).pretty()
+```
+#### Обмеження виводу
+```javascript
+db.famous.find(
+    {   },   
+    { _id: 0 }
+).pretty().limit(1)
+```
+#### Сортування по зростанню `ASC`
+```javascript
+db.famous.find(
+    {   },
+    { _id: 0 }
+).sort({ age: 1})
+```
+#### Сортування по спаданню `DESC`
+```javascript
+db.famous.find(
+    {   },
+    { _id: 0 }
+).sort({ age: -1})
+```
+#### Параметри пошуку: логічне `І`
+```javascript
+db.famous.find(
+    { age: 56, occupation: 'Artist' },
+    { _id: 0 }
+).pretty()
+// 
+db.famous.find(
+    { $and: [ {age: 56}, {occupation: 'Artist'} ] },
+    { _id: 0 }
+).pretty()
+```
+#### Параметри пошуку: логічне `АБО`
+```javascript
+db.famous.find(
+    { $or: [ {age: 48}, {occupation: 'Artist'} ] },
+    { _id: 0 }
+).pretty()
+```
+#### Параметри пошуку: індекси та поля
+```javascript
+db.famous.find(
+    { 'works.0.name': 'Kobzar' }
+).pretty()
+```
+
+
 
 ## <a name="4">Оновлення та видалення даних</a>
-```javascript 
 
-```
+
 
 ## <a name="5">Об'єднання запитів</a>
 ```javascript
 
 ```
 
+
+
+
 ## <a name="6">Пошук вмісту.</a>
 ```javascript
 
 ```
 
+
+
+
 ## <a name="7">Опрацювання даних в колекції.</a>
 ```javascript
 
 ```
+## <a name="8">Оператори</a>
+## Логічні оператори
+#### `$and` - логічне `І`
+#### `$not` - логічне `НЕ`
+#### `$or` - логічне `АБО`
+#### `$nor` - логічне `АБО-НЕ`
+|A | B |АБО-НЕ|
+|---|---|---|
+|0	| 0 |	1|
+|0	| 1 |	0|
+|1	| 0 |	0|
+|1	| 1 |	0|
 
-## <a name="8">Фільтри та Оператори.</a>
+
+
+##
+## Оператори порівняння 
+#### `$gt` - `greater than` еквівалентний `>`
+#### `$lt` - `less than` еквівалентний `<`
+#### `$gte` - `greater than or equal to` еквівалентний `>=`
+#### `$lte` - `less than or equal to` еквівалентний `<=`
+#### `$eq` - `equal` еквівалентний `==`
+#### `$ne` - `not equal` еквівалентний `!=`
+
+#### `$in` - для значень наявних у масиві
+#### `$nin` - для значень наявних у масиві відсутніх у масиві
+
+
+## Елементи
+#### `$type` - тип елемента (Array, Object, Boolean)
+#### `$exists` -  елемент (не)існує
+
+## Масиви
+#### `$all` -  відповідає усім значенням у масиві
+#### `$elemMatch` -  відповідає переданій множині умов
+#### `$size` -  розмірність масиву
+
+#### Застосування:
 ```javascript
+db.famous.find(
+    { age: { $gt: 64 } }
+)
 
+db.famous.find(
+    { $or: [ {age: 48}, {occupation: 'Artist'} ] },
+)
+
+db.famous.find(
+    {
+        age: { $in: [32, 64, 48, 83, 100] },
+        occupation: { $nin: ['Novelist', 'Artist'] }
+    }
+)
+
+db.famous.find(
+    { works: { $exists: true } } // true || 1, false || 0
+)
+
+db.famous.find(
+    { works: { $size: 1 } }
+)
+```
+#
+```
+ _____ _                _          _ _ 
+|_   _| |__   ___      | | ___  __| (_)
+  | | | '_ \ / _ \  _  | |/ _ \/ _` | |
+  | | | | | |  __/ | |_| |  __/ (_| | |
+  |_| |_| |_|\___|  \___/ \___|\__,_|_|
 ```
 ![](./mandalorian.jpg)
