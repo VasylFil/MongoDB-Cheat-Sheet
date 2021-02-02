@@ -32,7 +32,7 @@ db
 ```
 
 
-##
+###
 ## <a name="1" align="center">Створення бази даних</a>
 #### Створення | Вибір БД
 ```javascript
@@ -56,7 +56,7 @@ show collections
 ```
 
 
-##
+###
 ## <a name="2" >Додавання даних до колекції</a>
 #### Додавання одного запису до колекції
 ```javascript
@@ -104,7 +104,7 @@ db.famous.insertMany(
 ```
 
 
-##
+###
 ## <a name="3">Вибірка даних із колекції</a>
 ```javascript
 db.famous.find()
@@ -174,7 +174,7 @@ db.famous.find(
 ```
 
 
-##
+###
 ## <a name="4">Оновлення та видалення даних</a>
 ```javascript
 db.famous.updateOne(
@@ -208,7 +208,7 @@ db.famous.deleteMany(
 ```
 
 
-##
+###
 ## <a name="5">Об'єднання запитів</a>
 #### Доступні оператори:
 + #### `insertOne`
@@ -256,7 +256,7 @@ db.famous.bulkWrite(
 
 
 
-##
+###
 ## <a name="6">Індексовані поля. Пошук вмісту.</a>
 #### Нова колекція
 ```javascript
@@ -317,7 +317,7 @@ db.comments.find(
 ).sort({ score: { $meta: 'textScore' }})
 ```
 
-##
+###
 ## <a name="7">Обробка даних.</a>
 #### Кількість відповідних записів
 ```javascript
