@@ -6,7 +6,7 @@
 #### [3. Вибірка даних з колекції.](#3)
 #### [4. Оновлення та видалення даних.](#4)
 #### [5. Об'єднання запитів.](#5)
-#### [6. Пошук вмісту.](#6)
+#### [6. Індексовані поля. Пошук вмісту.](#6)
 #### [7. Опрацювання даних в колекції.](#7)
 #### [8. Оператори.](#8)
 
@@ -147,7 +147,7 @@ db.famous.find(
     { _id: 0 }
 ).sort({ age: -1})
 ```
-#### Параметри пошуку: логічне `І`
+#### Параметри пошуку: `І`
 ```javascript
 db.famous.find(
     { age: 56, occupation: 'Artist' },
@@ -159,7 +159,7 @@ db.famous.find(
     { _id: 0 }
 ).pretty()
 ```
-#### Параметри пошуку: логічне `АБО`
+#### Параметри пошуку: `АБО`
 ```javascript
 db.famous.find(
     { $or: [ {age: 48}, {occupation: 'Artist'} ] },
@@ -257,20 +257,112 @@ db.famous.bulkWrite(
 
 
 
-## <a name="6">Пошук вмісту.</a>
+## <a name="6">Індексовані поля. Пошук вмісту.</a>
+#### Нова колекція
 ```javascript
-
+db.comments.insertMany(
+    [
+        {
+            "name": "id labore ex et quam laborum",
+            "email": "Eliseo@gardner.biz",
+            "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
+        },
+        {
+            "name": "quo vero reiciendis velit similique earum",
+            "email": "Jayne_Kuhic@sydney.com",
+            "body": "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et"
+        },
+        {
+            "name": "odio adipisci rerum aut animi",
+            "email": "Nikita@garfield.biz",
+            "body": "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione"
+        },
+        {
+            "name": "alias odio sit",
+            "email": "Lew@alysha.tv",
+            "body": "non et atque\noccaecati deserunt quas accusantium unde odit nobis qui voluptatem\nquia voluptas consequuntur itaque dolor\net qui rerum deleniti ut occaecati"
+        },
+        {
+            "name": "vero eaque aliquid doloribus et culpa",
+            "email": "Hayden@althea.biz",
+            "body": "harum non quasi et ratione\ntempore iure ex voluptates in ratione\nharum architecto fugit inventore cupiditate\nvoluptates magni quo et"
+        }
+    ]
+)
 ```
-
-
+#### Індексовані поля
+```javascript
+db.comments.createIndex(
+    {
+        name: 'text',
+        email: 'text',
+        body: 'text'
+    }
+)
+db.comments.find({
+    $text: {
+        $search: 'quidem'
+    }
+})
+```
+#### Пошук релевантного вмісту
+```javascript
+db.comments.find(
+    { $text: { $search: 'ex' } },
+    { score: { $meta: 'textScore' }}
+).sort({ score: { $meta: 'textScore' }})
+```
 
 
 ## <a name="7">Опрацювання даних в колекції.</a>
+#### Кількість відповідних записів
 ```javascript
-
+db.famous.count({
+    age: 32
+})
 ```
+#### Унікальні записи
+```javascript
+db.famous.distinct({
+    age: 32
+})
+```
+#### Агрегація полів
+```javascript
+// Щорічні внески на банківський рахунок
+db.deposit.insertMany([
+    {
+        name: 'Kai',
+        amount: 1000,
+        date: new Date(2019)
+    },
+    {
+        name: 'Kai',
+        amount: 1100,
+        date: new Date(2020)
+    },
+    {
+        name: 'Mike',
+        amount: 880,
+        date: new Date(2020)
+    },
+    {
+        name: 'Kai',
+        amount: 1210,
+        date: new Date(2021)
+    },
+])
+```
+```javascript
+// Сума щорічних внесків користувава 'Kai'
+db.deposit.aggregate([
+    { $match: { name: 'Kai' } },
+    { $group: { _id: '$name', total: {$sum: '$amount'}}}
+])
+```
+
 ## <a name="8">Оператори</a>
-## Логічні оператори
+### Логічні оператори
 #### `$and` - логічне `І`
 #### `$not` - логічне `НЕ`
 #### `$or` - логічне `АБО`
@@ -285,7 +377,7 @@ db.famous.bulkWrite(
 
 
 ##
-## Оператори порівняння 
+### Оператори порівняння 
 #### `$gt` - `greater than` еквівалентний `>`
 #### `$lt` - `less than` еквівалентний `<`
 #### `$gte` - `greater than or equal to` еквівалентний `>=`
@@ -297,11 +389,11 @@ db.famous.bulkWrite(
 #### `$nin` - для значень наявних у масиві відсутніх у масиві
 
 
-## Елементи
+### Елементи
 #### `$type` - тип елемента (Array, Object, Boolean)
 #### `$exists` -  елемент (не)існує
 
-## Масиви
+### Масиви
 #### `$all` -  відповідає усім значенням у масиві
 #### `$elemMatch` -  відповідає переданій множині умов
 #### `$size` -  розмірність масиву
