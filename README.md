@@ -105,8 +105,7 @@ db.famous.insertMany(
 
 
 
-## <a name="3">Вибірка даних з колекції</a>
-#### Вибірка всіх даних із колекції
+## <a name="3">Вибірка даних із колекції</a>
 ```javascript
 db.famous.find()
 ```
@@ -177,12 +176,82 @@ db.famous.find(
 
 
 ## <a name="4">Оновлення та видалення даних</a>
+```javascript
+db.famous.updateOne(
+    { age: 48 }, 
+    { $set: { age:45 } }
+)
+```
+#### Оновлення багатьох елементів
+```javascript
+db.famous.updateMany(
+    { age: {$in: [47, 83]} }, 
+    { $set: { age: 32 } }
+)
+```
+#### Заміна елементів
+```javascript
+db.famous.replaceOne(
+    { name: 'T. H. Shevchenko' }, 
+    { 
+        name: 'Taras Shevchenko',
+        age: 13,
+        writes: 'I Was Thirteen'
+    }
+)
+```
+#### Видалення даних
+```javascript
+db.famous.deleteMany(
+    { age: { $lt: 45 } },
+)
+```
 
 
 
 ## <a name="5">Об'єднання запитів</a>
+#### Доступні оператори:
++ #### `insertOne`
++ #### `updateOne`
++ #### `updateMany`
++ #### `deleteOne`
++ #### `deleteMany`
++ #### `replaceOne`
 ```javascript
-
+db.famous.bulkWrite(
+    [
+        {
+            insertOne: { 
+                'document': {
+                    name: 'Borys Yevhenovych Paton',
+                    age: 101,
+                    occupation: 'Scientist'
+                }
+            }
+        },
+        {
+            deleteOne: {
+                filter: {
+                    age: 45
+                }
+            }
+        },
+        {
+            updateOne: {
+                filter: { ... },
+                update: {
+                    $set: { ... }
+                }
+            }
+        },
+        {
+            replaceOne: {
+                filter: { ... },
+                replacement: { ... }
+            }
+        }
+    ]
+)
 ```
 
 
